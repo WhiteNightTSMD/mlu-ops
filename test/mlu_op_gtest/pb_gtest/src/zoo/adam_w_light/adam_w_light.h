@@ -20,23 +20,33 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *************************************************************************/
-#ifndef KERNELS_ADAMW_ADAMW_H_
-#define KERNELS_ADAMW_ADAMW_H_
+#ifndef TEST_MLU_OP_GTEST_SRC_ZOO_ADAMW_ADAMW_LITE_H_
+#define TEST_MLU_OP_GTEST_SRC_ZOO_ADAMW_ADAMW_LITE_H_
 
-#include "mlu_op.h"
+#include "executor.h"
 
-struct mluOpAdamWStruct {
-  float weight_decay = 0;
-  float grad_scale = 1;
-  bool use_nesterov = false;
-  bool need_remove_nan = false;
+namespace mluoptest {
+
+class AdamWLightExecutor : public Executor {
+ public:
+  AdamWLightExecutor() {}
+  ~AdamWLightExecutor() {}
+  void paramCheck() override;
+  void compute() override;
+  void cpuCompute() override;
+  void setMiscellaneousParam() override;
+
+ private:
+  float lr;
+  float beta1;
+  float beta2;
+  float bias1;
+  float bias2;
+  float epsilon;
+  float weight_decay;
+  float scale;
+  bool use_nesterov;
 };
 
-mluOpStatus_t MLUOP_WIN_API KernelApplyAdamW(
-    const cnrtDim3_t k_dim, const cnrtFunctionType_t k_type,
-    const cnrtQueue_t queue, void *param, void *param_h, void *grad,
-    void *momentum, void *velocity, float lr, float beta1, float beta2,
-    float bias1, float bias2, float epsilon, float weight_decay, float scale,
-    bool use_nesterov, bool need_remove_nan, size_t size);
-
-#endif  // KERNELS_ADAMW_ADAMW_H_
+}  // namespace mluoptest
+#endif  // TEST_MLU_OP_GTEST_SRC_ZOO_ADAMW_ADAMW_LITE_H_
